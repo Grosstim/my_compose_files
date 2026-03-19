@@ -1,0 +1,496 @@
+---
+modules:
+  apvgk:
+    metrics:
+    #ШКАФ СВК
+    - name: cabinet_temperature
+      path: '{ $.cabinet.1.state[*].cabinet_temperature }'
+      help: Температура шкафа
+      valuetype: value
+
+    - name: cabinet_humidity
+      path: '{ $.cabinet.1.state[*].cabinet_humidity }'
+      help: Влажность шкафа
+      valuetype: value
+
+    - name: input_voltage
+      path: '{ $.cabinet.1.state[*].input_voltage }'
+      help: Входное напряжение
+      valuetype: value
+
+    - name: control_cabinet_open
+      path: '{ $.cabinet.1.state[*].control_cabinet_open }'
+      help: Шкаф открыт или нет
+      valuetype: boolean
+
+    #СИЛОПРИЕМНЫЕ МОДУЛИ0
+    ##ПЕРВЫЙ ДАТЧИК
+    - name: datchik_1_canal_1_2
+      path: '{ $.controller_pds.1.status[0].zero_code[0] }'
+      help: Силоприемный модуль 1 канал 1+2
+      valuetype: value
+    
+    - name: datchik_1_canal_3_4
+      path: '{ $.controller_pds.1.status[0].zero_code[1] }'
+      help: Силоприемный модуль 1 канал 3+4
+      valuetype: value
+
+    - name: datchik_1_canal_5
+      path: '{ $.controller_pds.1.status[0].zero_code[2] }'
+      help: Силоприемный модуль 1 канал 5
+      valuetype: value
+
+    ##ВТОРОЙ ДАТЧИК
+    - name: datchik_2_canal_1_2
+      path: '{ $.controller_pds.2.status[0].zero_code[0] }'
+      help: Силоприемный модуль 2 канал 1+2
+      valuetype: value
+    
+    - name: datchik_2_canal_3_4
+      path: '{ $.controller_pds.2.status[0].zero_code[1] }'
+      help: Силоприемный модуль 2 канал 3+4
+      valuetype: value
+
+    - name: datchik_2_canal_5
+      path: '{ $.controller_pds.2.status[0].zero_code[2] }'
+      help: Силоприемный модуль 2 канал 5
+      valuetype: value
+
+    ##ТРЕТИЙ ДАТЧИК
+    - name: datchik_3_canal_1_2
+      path: '{ $.controller_pds.3.status[0].zero_code[0] }'
+      help: Силоприемный модуль 3 канал 1+2
+      valuetype: value
+    
+    - name: datchik_3_canal_3_4
+      path: '{ $.controller_pds.3.status[0].zero_code[1] }'
+      help: Силоприемный модуль 3 канал 3+4
+      valuetype: value
+
+    - name: datchik_3_canal_5
+      path: '{ $.controller_pds.3.status[0].zero_code[2] }'
+      help: Силоприемный модуль 3 канал 5
+      valuetype: value
+
+    ##ЧЕТВЕРТЫЙ ДАТЧИК
+    - name: datchik_4_canal_1_2
+      path: '{ $.controller_pds.4.status[0].zero_code[0] }'
+      help: Силоприемный модуль 4 канал 1+2
+      valuetype: value
+    
+    - name: datchik_4_canal_3_4
+      path: '{ $.controller_pds.4.status[0].zero_code[1] }'
+      help: Силоприемный модуль 4 канал 3+4
+      valuetype: value
+
+    - name: datchik_4_canal_5
+      path: '{ $.controller_pds.4.status[0].zero_code[2] }'
+      help: Силоприемный модуль 4 канал 5
+      valuetype: value
+
+    #МОДУЛЬ ИЗМЕРЕНИЯ ГАБАРИТОВ
+    ##ПЕРВЫЙ ДАТЧИК
+    - name: mig_1_ugol_5
+      path: '{ $.external_dimensions.1.status[-3].transparency.5\.0 }'
+      help: МИГ угол 5 по центру
+      valuetype: value
+  
+    - name: mig_1_ugol_35
+      path: '{ $.external_dimensions.1.status[-3].transparency.35\.0 }'
+      help: МИГ угол 35 по центру
+      valuetype: value
+
+    - name: mig_1_ugol_70
+      path: '{ $.external_dimensions.1.status[-3].transparency.70\.0 }'
+      help: МИГ угол 70 по центру
+      valuetype: value
+
+    - name: mig_1_ugol_110
+      path: '{ $.external_dimensions.1.status[-3].transparency.110\.0 }'
+      help: МИГ угол 110 по центру
+      valuetype: value
+
+    - name: mig_1_ugol_145
+      path: '{ $.external_dimensions.1.status[-3].transparency.145\.0 }'
+      help: МИГ угол 145 по центру
+      valuetype: value
+
+    - name: mig_1_ugol_175
+      path: '{ $.external_dimensions.1.status[-3].transparency.175\.0 }'
+      help: МИГ угол 175 по центру
+      valuetype: value
+
+    ##ВТОРОЙ ДАТЧИК
+    - name: mig_2_ugol_5
+      path: '{ $.external_dimensions.1.status[-2].transparency.5\.0 }'
+      help: МИГ угол 5 на 2 полосе
+      valuetype: value
+  
+    - name: mig_2_ugol_35
+      path: '{ $.external_dimensions.1.status[-2].transparency.35\.0 }'
+      help: МИГ угол 35 на 2 полосе
+      valuetype: value
+
+    - name: mig_2_ugol_70
+      path: '{ $.external_dimensions.1.status[-2].transparency.70\.0 }'
+      help: МИГ угол 70 на 2 полосе
+      valuetype: value
+
+    - name: mig_2_ugol_110
+      path: '{ $.external_dimensions.1.status[-2].transparency.110\.0 }'
+      help: МИГ угол 110 на 2 полосе
+      valuetype: value
+
+    - name: mig_2_ugol_145
+      path: '{ $.external_dimensions.1.status[-2].transparency.145\.0 }'
+      help: МИГ угол 145 на 2 полосе
+      valuetype: value
+
+    - name: mig_2_ugol_175
+      path: '{ $.external_dimensions.1.status[-2].transparency.175\.0 }'
+      help: МИГ угол 175 на 2 полосе
+      valuetype: value
+
+    ##ТРЕТИЙ ДАТЧИК
+    - name: mig_3_ugol_5
+      path: '{ $.external_dimensions.1.status[-1].transparency.5\.0 }'
+      help: МИГ угол 5 на 1 полосе
+      valuetype: value
+  
+    - name: mig_3_ugol_35
+      path: '{ $.external_dimensions.1.status[-1].transparency.35\.0 }'
+      help: МИГ угол 35 на 1 полосе
+      valuetype: value
+
+    - name: mig_3_ugol_70
+      path: '{ $.external_dimensions.1.status[-1].transparency.70\.0 }'
+      help: МИГ угол 70 на 1 полосе
+      valuetype: value
+
+    - name: mig_3_ugol_110
+      path: '{ $.external_dimensions.1.status[-1].transparency.110\.0 }'
+      help: МИГ угол 110 на 1 полосе
+      valuetype: value
+
+    - name: mig_3_ugol_145
+      path: '{ $.external_dimensions.1.status[-1].transparency.145\.0 }'
+      help: МИГ угол 145 на 1 полосе
+      valuetype: value
+
+    - name: mig_3_ugol_175
+      path: '{ $.external_dimensions.1.status[-1].transparency.175\.0 }'
+      help: МИГ угол 175 на 1 полосе
+      valuetype: value
+
+    #СЕРВЕР СВК
+    - name: cpu_temperature
+      path: '{ $.server.stolb-db.cpu[0].cpu_temperature.Package\ id\ 0 }'
+      help: Температура процессора
+      valuetype: value
+
+    - name: cpu_usage
+      path: '{ $.server.stolb-db.cpu[0].cpu_usage.tot }'
+      help: Использование процессора в %
+      valuetype: value 
+
+    - name: ram_usage
+      path: '{ $.server.stolb-db.cpu[0].ram_usage }'
+      help: Использование оператвной в %
+      valuetype: value 
+
+    - name: hdd_free_space_gb
+      path: '{ $.server.stolb-db.hdd[0].hdd_free_space_gb.ROOT }'
+      help: Свободное место на диске  HDD в ГБ
+      valuetype: value 
+
+    - name: hdd_usage
+      path: '{ $.server.stolb-db.hdd[0].hdd_usage.ROOT }'
+      help: Использование HDD в %
+      valuetype: value
+
+
+    # ЭЛЕКТРОННОЕ КЛЕЙМО
+    - name: electronic_stamp_1
+      type: object
+      path: '{ $.controller_pds.1.params[0] }'
+      labels:
+        status: '{ .electronic_stamp.* }'
+      values:
+        status: 1
+
+    - name: electronic_stamp_2
+      type: object
+      path: '{ $.controller_pds.2.params[0] }'
+      labels:
+        status: '{ .electronic_stamp.* }'
+      values:
+        status: 1
+
+    - name: electronic_stamp_3
+      type: object
+      path: '{ $.controller_pds.3.params[0] }'
+      labels:
+        status: '{ .electronic_stamp.* }'
+      values:
+        status: 1
+
+    - name: electronic_stamp_4
+      type: object
+      path: '{ $.controller_pds.4.params[0] }'
+      labels:
+        status: '{ .electronic_stamp.* }'
+      values:
+        status: 1
+  adms:
+    metrics:
+    #   "Напряжение от сети"
+    - name: system_power_220V
+      path: '{ $.data[*].system.mup[0].vmain }'
+      labels:
+        name: "220V"
+    
+    #   "Напряжение от батарей"
+    - name: system_power_battery
+      path: '{ $.data[*].system.mup[0].vmain }'
+      labels:
+        name: "Battery"
+
+    #   "MRD"
+    - name: status_MRD
+      path: '{ $.info.status }'
+      labels:
+        id: '{ $.info.id }' 
+        name: '{ $.info.name }'
+    
+    #   "DTV"
+    - name: id_DTV
+      path: '{ $.data[*].slist[*][?(@.name=="DTV")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="DTV")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="DTV")].name }'
+
+    #   "DVPD"
+    - name: id_DVPD
+      path: '{ $.data[*].slist[*][?(@.name=="DVPD")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="DVPD")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="DVPD")].name }'
+
+    #   "DTD"
+    - name: id_DTD
+      path: '{ $.data[*].slist[*][?(@.name=="DTD")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="DTD")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="DTD")].name }'
+
+    #   "DOV"
+    - name: id_DOV
+      path: '{ $.data[*].slist[*][?(@.name=="DOV")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="DOV")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="DOV")].name }'
+    
+    #   "DPG"
+    - name: id_DPG
+      path: '{ $.data[*].slist[*][?(@.name=="DPG")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="DPG")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="DPG")].name }'
+
+    #   "DO"
+    - name: id_DO
+      path: '{ $.data[*].slist[*][?(@.name=="DO")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="DO")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="DO")].name }'
+    
+    #   "MAS"
+    - name: id_MAS
+      path: '{ $.data[*].slist[*][?(@.name=="MAS")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="MAS")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="MAS")].name }'
+    
+    #   "MUP"
+    - name: id_MUP
+      path: '{ $.data[*].slist[*][?(@.name=="MUP")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="MUP")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="MUP")].name }'
+
+    #   "SSD"
+    - name: id_SSD
+      path: '{ $.data[*].slist[*][?(@.name=="SSD")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="SSD")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="SSD")].name }'
+    
+    #   "DVG"
+    - name: id_DVG
+      path: '{ $.data[*].slist[*][?(@.name=="DVG")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="DVG")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="DVG")].name }'
+
+    #   "RM"
+    - name: id_RM
+      path: '{ $.data[*].slist[*][?(@.name=="RM")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="RM")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="RM")].name }'
+    
+    #   "DNV"
+    - name: id_DNV
+      path: '{ $.data[*].slist[*][?(@.name=="DNV")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="DNV")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="DNV")].name }'
+
+    #   "DSV"
+    - name: id_DSV
+      path: '{ $.data[*].slist[*][?(@.name=="DSV")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="DSV")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="DSV")].name }'
+
+    #   "DIO"
+    - name: id_DIO
+      path: '{ $.data[*].slist[*][?(@.name=="DIO")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="DIO")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="DIO")].name }'
+
+    #   "DSDO"
+    - name: id_DSDO
+      path: '{ $.data[*].slist[*][?(@.name=="DSDO")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="DSDO")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="DSDO")].name }'
+
+    #   "DVU"
+    - name: id_DVU
+      path: '{ $.data[*].slist[*][?(@.name=="DVU")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="DVU")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="DVU")].name }'
+
+    #   "CAB"
+    - name: id_CAB
+      path: '{ $.data[*].slist[*][?(@.name=="CAB")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="CAB")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="CAB")].name }'
+    
+    #   "DSC"
+    - name: id_DSC
+      path: '{ $.data[*].slist[*][?(@.name=="DSC")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="DSC")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="DSC")].name }'
+
+    #   "DST"
+    - name: id_DST
+      path: '{ $.data[*].slist[*][?(@.name=="DST")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="DST")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="DST")].name }'
+
+    #   "DSPD"
+    - name: id_DSPD
+      path: '{ $.data[*].slist[*][?(@.name=="DSPD")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="DSPD")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="DSPD")].name }'
+
+    #   "PR2"
+    - name: id_PR2
+      path: '{ $.data[*].slist[*][?(@.name=="PR2")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="PR2")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="PR2")].name }'
+    
+    #   "SDD"
+    - name: id_SDD
+      path: '{ $.data[*].slist[*][?(@.name=="SDD")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="SDD")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="SDD")].name }'
+
+    #   "ECO"
+    - name: id_ECO
+      path: '{ $.data[*].slist[*][?(@.name=="ECO")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="ECO")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="ECO")].name }'
+
+    #   "PL2"
+    - name: id_PL2
+      path: '{ $.data[*].slist[*][?(@.name=="PL2")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="PL2")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="PL2")].name }'
+
+    #   "WAC"
+    - name: id_WAC
+      path: '{ $.data[*].slist[*][?(@.name=="WAC")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="WAC")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="WAC")].name }'
+
+    #   "HMP"
+    - name: id_HMP
+      path: '{ $.data[*].slist[*][?(@.name=="HMP")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="HMP")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="HMP")].name }'
+
+    #   "MWS"
+    - name: id_MWS
+      path: '{ $.data[*].slist[*][?(@.name=="MWS")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="MWS")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="MWS")].name }'
+
+    #   "SDR"
+    - name: id_SDR
+      path: '{ $.data[*].slist[*][?(@.name=="SDR")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="SDR")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="SDR")].name }'
+
+    #   "MP5"
+    - name: id_MP5
+      path: '{ $.data[*].slist[*][?(@.name=="MP5")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="MP5")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="MP5")].name }'
+
+    #   "PTB"
+    - name: id_PTB
+      path: '{ $.data[*].slist[*][?(@.name=="PTB")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="PTB")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="PTB")].name }'
+
+    #   "PWD"
+    - name: id_PWD
+      path: '{ $.data[*].slist[*][?(@.name=="PWD")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="PWD")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="PWD")].name }'
+
+    #   "WS6"
+    - name: id_WS6
+      path: '{ $.data[*].slist[*][?(@.name=="WS6")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="WS6")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="WS6")].name }'
+
+    #   "SR15"
+    - name: id_SR15
+      path: '{ $.data[*].slist[*][?(@.name=="SR15")].id }'
+      labels:
+        status: '{ $.data[*].slist[*][?(@.name =="SR15")].status }'
+        name: '{ $.data[*].slist[*][?(@.name=="SR15")].name }'
+
+

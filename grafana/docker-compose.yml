@@ -1,0 +1,84 @@
+services:
+  karma:
+    image: ghcr.io/prymitive/karma:latest
+    #volumes:
+    container_name: karma
+    hostname: karma
+    ports:
+      - 9111:8080
+    restart: unless-stopped
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./monitoringconfigs/prometheus:/etc/prometheus/
+      - ./monitoringdata/prometheus/data:/prometheus
+    container_name: prometheus
+    hostname: prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --web.enable-admin-api
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+  grafana:
+    image: grafana/grafana
+    user: root
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    volumes:
+      - ./monitoringconfigs/grafana:/var/lib/grafana
+      - ./monitoringconfigs/grafana/provisioning/:/etc/grafana/provisioning/
+    container_name: grafana
+    hostname: grafana
+    restart: unless-stopped
+  alertmanager:
+    image: prom/alertmanager
+    user: root
+    ports:
+      - 9093:9093
+    volumes:
+      - ./monitoringconfigs/alertmanager:/etc/alertmanager/
+      - ./monitoringdata/alertmanager/data:/alertmanager
+    container_name: alertmanager
+    hostname: alertmanager
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yaml'
+      - '--storage.path=/alertmanager/data'
+  blackbox-exporter:
+    image: prom/blackbox-exporter
+    user: root
+    container_name: blackbox
+    hostname: blackbox
+    ports:
+      - 9115:9115
+    restart: unless-stopped
+    command:
+      - "--config.file=/etc/blackbox/blackbox-exporter.yml"
+    volumes:
+      - ./monitoringconfigs/blackbox-exporter:/etc/blackbox
+  json-exporter:
+    image: quay.io/prometheuscommunity/json-exporter
+    container_name: json-exporter
+    hostname: json-exporter
+    ports:
+      - 7979:7979
+    restart: unless-stopped
+    command:
+      - "--config.file=/etc/json-exporter/json-exporter.yml"
+    volumes:
+      - ./monitoringconfigs/json-exporter:/etc/json-exporter
+  snmp-exporter:
+    image: prom/snmp-exporter
+    container_name: snmp-exporter
+    hostname: snmp-exporter
+    ports:
+      - 9116:9116
+    restart: unless-stopped
+    command:
+      - "--config.file=/etc/snmp-exporter/snmp-exporter.yml"
+    volumes:
+      - ./monitoringconfigs/snmp-exporter:/etc/snmp-exporter
+

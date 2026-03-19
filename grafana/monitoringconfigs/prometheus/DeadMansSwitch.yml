@@ -1,0 +1,28 @@
+groups:
+  - name: 'DeadMansSwitch'
+    rules:
+      # - alert: DeadMansSwitch
+      #   expr: vector(1)
+      #   labels:
+      #     prom: 'Bercut1'	# уникальный тэг для каждого узла
+      #   annotations:
+      #     title: 'DeadMansSwitch Alert'
+      #     description: 'This alert should be always ON to check that alert pipeline is working'
+      - alert: 'Оборудование недоступно'
+        expr: probe_success == 0
+        for: 1m
+        labels:
+          severity: "critical"
+        annotations:
+          title: '{{ .Labels.name }} is DOWN'
+          description: '{{ .Labels.instance }} shows that {{ .Labels.name }} is not running'
+      - alert: upsESystemInputVoltage
+        expr: |
+          upsESystemInputVoltage < 250
+          and
+          upsESystemInputVoltage < 200 
+        for: 2m
+        labels:
+          severity: "warning"
+        annotations:
+          summary: "SLO burn rate critical - budget exhaustion in ~2 days"

@@ -1,0 +1,3793 @@
+# my global config
+global:
+  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+   - 'DeadMansSwitch.yml'
+
+# A scrape configuration containing exactly one endpoint to scrape:
+scrape_configs:
+  - job_name: json_APVGK
+    metrics_path: /probe
+    static_configs:
+      - targets:
+        - http://10.14.240.21:20117/monitoring.json
+        labels:                           
+          zone: '01'
+      - targets:
+        - http://10.14.240.53:20117/monitoring.json
+        labels:                           
+          zone: '02'
+      - targets:
+        - http://10.14.240.85:20117/monitoring.json
+        labels:                           
+          zone: '03'
+      - targets:
+        - http://10.14.240.117:20117/monitoring.json
+        labels:                           
+          zone: '04'
+      - targets:
+        - http://10.14.240.149:20117/monitoring.json
+        labels:                           
+          zone: '05'
+      - targets:
+        - http://10.14.240.181:20117/monitoring.json
+        labels:                           
+          zone: '06'
+      - targets:
+        - http://10.14.240.213:20117/monitoring.json
+        labels:                           
+          zone: '07'
+      - targets:
+        - http://10.14.240.245:20117/monitoring.json
+        labels:                           
+          zone: '08'
+      - targets:
+        - http://10.14.241.21:20117/monitoring.json
+        labels:                           
+          zone: '09'
+      - targets:
+        - http://10.14.241.53:20117/monitoring.json
+        labels:                           
+          zone: '10'
+      - targets:
+        - http://10.14.241.85:20117/monitoring.json
+        labels:                           
+          zone: '11'
+    params:
+      module:
+      - apvgk
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        ## Location of the json exporter's real <hostname>:<port>
+        replacement: json-exporter:7979 # equivalent to "localhost:7979"
+
+  - job_name: json_ADMS
+    metrics_path: /probe
+    static_configs:
+      - targets:
+        - http://10.14.240.8:81/v2/poll
+        labels:                           
+          zone: '01'
+      - targets:
+        - http://10.14.240.40:81/v2/poll
+        labels:                           
+          zone: '02'
+      # - targets:
+      #   - http://10.14.240.85:20117/monitoring.json
+      #   labels:                           
+      #     zone: '03'
+      - targets:
+        - http://10.14.240.104:81/v2/poll
+        labels:                           
+          zone: '04'
+      - targets:
+        - http://10.14.240.136:81/v2/poll
+        labels:                           
+          zone: '05'
+      - targets:
+        - http://10.14.240.168:81/v2/poll
+        labels:                           
+          zone: '06'
+      - targets:
+        - http://10.14.240.200:81/v2/poll
+        labels:                           
+          zone: '07'
+      - targets:
+        - http://10.14.240.232:81/v2/poll
+        labels:                           
+          zone: '08'
+      - targets:
+        - http://10.14.241.8:81/v2/poll
+        labels:                           
+          zone: '09'
+      - targets:
+        - http://10.14.241.40:81/v2/poll
+        labels:                           
+          zone: '10'
+      - targets:
+        - http://10.14.241.72:81/v2/poll
+        labels:                           
+          zone: '11'
+      - targets:
+        - http://10.14.242.6:81/v2/poll
+        labels:                           
+          zone: 'Салехард 1331'
+    params:
+      module:
+      - adms
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        ## Location of the json exporter's real <hostname>:<port>
+        replacement: json-exporter:7979 # equivalent to "localhost:7979"
+
+  - job_name: snmp_IBP_ippon
+    static_configs:
+      - targets:
+        - 10.14.240.6
+        - 10.14.240.38
+        - 10.14.240.70
+        - 10.14.240.102
+        - 10.14.240.134
+        - 10.14.240.166
+        - 10.14.240.198
+        - 10.14.240.230
+        - 10.14.241.6
+        - 10.14.241.38
+        - 10.14.241.70
+    metrics_path: /snmp
+    params:
+      auth: [public_v3]
+      module:
+      - ippon
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: snmp-exporter:9116  # The SNMP exporter's real hostname:port.
+
+  - job_name: PING_DEVICES
+    metrics_path: /probe
+    params:
+      module: [icmp]
+    static_configs:
+      #Участок 1
+      # - targets:
+      #   - 10.14.240.1	
+      #   labels:
+      #     zone: '01'
+      #     name: 'Vipnet HW 100 N3' - не пингуется
+      # - targets:
+      #   - 10.14.240.2	
+      #   labels:
+      #     zone: '01'
+      #     name: ''
+      - targets:
+        - 10.14.240.3	
+        labels:
+          zone: '01'
+          name: 'Коммутатор ASW-1.1'
+      - targets:
+        - 10.14.240.4
+        labels:
+          zone: '01'
+          name: 'Коммутатор ASW-1.2'
+      - targets:
+        - 10.14.240.5	
+        labels:
+          zone: '01'
+          name: 'Коммутатор ASW-1.3 в ШКТС-1'
+      - targets:
+        - 10.14.240.6	
+        labels:
+          zone: '01'
+          name: 'ИБП-1'
+      # - targets:
+      #   - 10.14.240.7	
+      #   labels:
+      #     zone: '01'
+      #     name: 'С2000-1'
+      - targets:
+        - 10.14.240.8	
+        labels:
+          zone: '01'
+          name: 'АДМС-1'
+      # - targets:
+      #   - 10.14.240.9	
+      #   labels:
+      #     zone: '01'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.10	
+      #   labels:
+      #     zone: '01'
+      #     name: ''
+      - targets:
+        - 10.14.240.11	
+        labels:
+          zone: '01'
+          name: 'ВК-1.1'
+      - targets:
+        - 10.14.240.12	
+        labels:
+          zone: '01'
+          name: 'ВК-1.2'
+      - targets:
+        - 10.14.240.13	
+        labels:
+          zone: '01'
+          name: 'ВК-1.3'
+      - targets:
+        - 10.14.240.14	
+        labels:
+          zone: '01'
+          name: 'ВК-1.4'
+      - targets:
+        - 10.14.240.15	
+        labels:
+          zone: '01'
+          name: 'ВК-1.5'
+      - targets:
+        - 10.14.240.16	
+        labels:
+          zone: '01'
+          name: 'ВК-1.6'
+      - targets:
+        - 10.14.240.17	
+        labels:
+          zone: '01'
+          name: 'ВК-1.7'
+      - targets:
+        - 10.14.240.18	
+        labels:
+          zone: '01'
+          name: 'ВК-1.8'
+      - targets:
+        - 10.14.240.19	
+        labels:
+          zone: '01'
+          name: 'Контроллер ТПИ-1.1'
+      - targets:
+        - 10.14.240.20	
+        labels:
+          zone: '01'
+          name: 'Контроллер ТПИ-1.2'
+      - targets:
+        - 10.14.240.21	
+        labels:
+          zone: '01'
+          name: 'СВК-1'
+      - targets:
+        - 10.14.240.22	
+        labels:
+          zone: '01'
+          name: 'МиниПК для управления ТПИ-1'
+      # - targets:
+      #   - 10.14.240.23	
+      #   labels:
+      #     zone: '01'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.24	
+      #   labels:
+      #     zone: '01'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.25	
+      #   labels:
+      #     zone: '01'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.26	
+      #   labels:
+      #     zone: '01'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.27	
+      #   labels:
+      #     zone: '01'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.28	
+      #   labels:
+      #     zone: '01'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.29	
+      #   labels:
+      #     zone: '01'
+      #     name: ''
+      - targets:
+        - 10.14.240.30	
+        labels:
+          zone: '01'
+          name: 'Конвертер-1 RS-485 для счётчика э/э'
+      # - targets:
+      #   - 10.14.240.31	
+      #   labels:
+      #     zone: '01'
+      #     name: 'Широковещательный адрес'
+      
+      #Участок 2
+      # - targets:
+      #   - 10.14.240.33	
+      #   labels:
+      #     zone: '02'
+      #     name: 'Vipnet HW 100 N3'
+      # - targets:
+      #   - 10.14.240.34	
+      #   labels:
+      #     zone: '02'
+      #     name: ''
+      - targets:
+        - 10.14.240.35	
+        labels:
+          zone: '02'
+          name: 'Коммутатор ASW-2.1'
+      - targets:
+        - 10.14.240.36	
+        labels:
+          zone: '02'
+          name: 'Коммутатор ASW-2.2'
+      - targets:
+        - 10.14.240.37	
+        labels:
+          zone: '02'
+          name: 'Коммутатор ASW-2.3 в ШКТС-2'
+      - targets:
+        - 10.14.240.38	
+        labels:
+          zone: '02'
+          name: 'ИБП-2'
+      # - targets:
+      #   - 10.14.240.39	
+      #   labels:
+      #     zone: '02'
+      #     name: 'С2000-2'
+      - targets:
+        - 10.14.240.40	
+        labels:
+          zone: '02'
+          name: 'АДМС-2'
+      # - targets:
+      #   - 10.14.240.41
+      #   labels:
+      #     zone: '02'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.42
+      #   labels:
+      #     zone: '02'
+      #     name: ''
+      - targets:
+        - 10.14.240.43	
+        labels:
+          zone: '02'
+          name: 'ВК-2.1'
+      - targets:
+        - 10.14.240.44	
+        labels:
+          zone: '02'
+          name: 'ВК-2.2'
+      - targets:
+        - 10.14.240.45	
+        labels:
+          zone: '02'
+          name: 'ВК-2.3'
+      - targets:
+        - 10.14.240.46	
+        labels:
+          zone: '02'
+          name: 'ВК-2.4'
+      - targets:
+        - 10.14.240.47	
+        labels:
+          zone: '02'
+          name: 'ВК-2.5'
+      - targets:
+        - 10.14.240.48	
+        labels:
+          zone: '02'
+          name: 'ВК-2.6'
+      - targets:
+        - 10.14.240.49	
+        labels:
+          zone: '02'
+          name: 'ВК-2.7'
+      - targets:
+        - 10.14.240.50	
+        labels:
+          zone: '02'
+          name: 'ВК-2.8'
+      - targets:
+        - 10.14.240.51	
+        labels:
+          zone: '02'
+          name: 'Контроллер ТПИ-2.1'
+      - targets:
+        - 10.14.240.52	
+        labels:
+          zone: '02'
+          name: 'Контроллер ТПИ-2.2'
+      - targets:
+        - 10.14.240.53	
+        labels:
+          zone: '02'
+          name: 'СВК-2'
+      - targets:
+        - 10.14.240.54	
+        labels:
+          zone: '02'
+          name: 'МиниПК для управления ТПИ-2'
+      - targets:
+        - 10.14.240.55	
+        labels:
+          zone: '02'
+          name: 'Контроллер ТПИ-2.3'
+      - targets:
+        - 10.14.240.56	
+        labels:
+          zone: '02'
+          name: 'Контроллер ТПИ-2.4'
+      # - targets:
+      #   - 10.14.240.57	
+      #   labels:
+      #     zone: '02'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.58	
+      #   labels:
+      #     zone: '02'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.59	
+      #   labels:
+      #     zone: '02'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.60	
+      #   labels:
+      #     zone: '02'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.61	
+      #   labels:
+      #     zone: '02'
+      #     name: ''
+      - targets:
+        - 10.14.240.62	
+        labels:
+          zone: '02'
+          name: 'Конвертер-2 RS-485 для счётчика э/э'
+      # - targets:
+      #   - 10.14.240.63	
+      #   labels:
+      #     zone: '02'
+      #     name: 'Широковещательный адрес'
+      
+      #Участок 3
+      # - targets:
+      #   - 10.14.240.65	
+      #   labels:
+      #     zone: '03'
+      #     name: 'Vipnet HW 100 N3'
+      - targets:
+        - 10.14.240.66
+        labels:
+          zone: '03'
+          name: 'МиниПК-3'
+      - targets:
+        - 10.14.240.67	
+        labels:
+          zone: '03'
+          name: 'Коммутатор ASW-3.1'
+      - targets:
+        - 10.14.240.68	
+        labels:
+          zone: '03'
+          name: 'Коммутатор ASW-3.2'
+      - targets:
+        - 10.14.240.69	
+        labels:
+          zone: '03'
+          name: 'Коммутатор ASW-3.3 в ШКТС-3'
+      - targets:
+        - 10.14.240.70	
+        labels:
+          zone: '03'
+          name: 'ИБП-3'
+      # - targets:
+      #   - 10.14.240.71	
+      #   labels:
+      #     zone: '03'
+      #     name: 'С2000-3'
+      # - targets:
+      #   - 10.14.240.72
+      #   labels:
+      #     zone: '03'
+      #     name: ''
+      - targets:
+        - 10.14.240.73	
+        labels:
+          zone: '03'
+          name: 'Изернет реле-3.1'
+      - targets:
+        - 10.14.240.74	
+        labels:
+          zone: '03'
+          name: 'Изернет реле-3.2'
+      - targets:
+        - 10.14.240.75	
+        labels:
+          zone: '03'
+          name: 'ВК-3.1'
+      - targets:
+        - 10.14.240.76	
+        labels:
+          zone: '03'
+          name: 'ВК-3.2'
+      - targets:
+        - 10.14.240.77	
+        labels:
+          zone: '03'
+          name: 'ВК-3.3'
+      - targets:
+        - 10.14.240.78	
+        labels:
+          zone: '03'
+          name: 'ВК-3.4'
+      - targets:
+        - 10.14.240.79	
+        labels:
+          zone: '03'
+          name: 'ВК-3.5'
+      - targets:
+        - 10.14.240.80	
+        labels:
+          zone: '03'
+          name: 'ВК-3.6'
+      - targets:
+        - 10.14.240.81	
+        labels:
+          zone: '03'
+          name: 'ВК-3.7'
+      - targets:
+        - 10.14.240.82	
+        labels:
+          zone: '03'
+          name: 'ВК-3.8'
+      - targets:
+        - 10.14.240.83	
+        labels:
+          zone: '03'
+          name: 'Контроллер ТПИ-3.1'
+      - targets:
+        - 10.14.240.84	
+        labels:
+          zone: '03'
+          name: 'Контроллер ТПИ-3.2'
+      - targets:
+        - 10.14.240.85	
+        labels:
+          zone: '03'
+          name: 'СВК-3'
+      - targets:
+        - 10.14.240.86	
+        labels:
+          zone: '03'
+          name: 'Умное освещение'
+      - targets:
+        - 10.14.240.87	
+        labels:
+          zone: '03'
+          name: 'Микроклимот ШКТС'
+      - targets:
+        - 10.14.240.88	
+        labels:
+          zone: '03'
+          name: 'Стабилизатор напряжения Штиль'
+      # - targets:
+      #   - 10.14.240.89	
+      #   labels:
+      #     zone: '03'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.90	
+      #   labels:
+      #     zone: '03'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.91	
+      #   labels:
+      #     zone: '03'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.92	
+      #   labels:
+      #     zone: '03'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.93	
+      #   labels:
+      #     zone: '03'
+      #     name: ''
+      - targets:
+        - 10.14.240.94	
+        labels:
+          zone: '03'
+          name: 'Конвертер-3 RS-485 для счётчика э/э'
+      # - targets:
+      #   - 10.14.240.95	
+      #   labels:
+      #     zone: '03'
+      #     name: 'Широковещательный адрес'
+      
+      #Участок 4
+      # - targets:
+      #   - 10.14.240.97	
+      #   labels:
+      #     zone: '04'
+      #     name: 'Vipnet HW 100 N3'
+      # - targets:
+      #   - 10.14.240.98	
+      #   labels:
+      #     zone: '04'
+      #     name: ''
+      - targets:
+        - 10.14.240.99	
+        labels:
+          zone: '04'
+          name: 'Коммутатор ASW-4.1'
+      - targets:
+        - 10.14.240.100	
+        labels:
+          zone: '04'
+          name: 'Коммутатор ASW-4.2'
+      - targets:
+        - 10.14.240.101	
+        labels:
+          zone: '04'
+          name: 'Коммутатор ASW-4.3 в ШКТС-4'
+      - targets:
+        - 10.14.240.102	
+        labels:
+          zone: '04'
+          name: 'ИБП-4'
+      # - targets:
+      #   - 10.14.240.103	
+      #   labels:
+      #     zone: '04'
+      #     name: 'С2000-4'
+      - targets:
+        - 10.14.240.104	
+        labels:
+          zone: '04'
+          name: 'АДМС-4'
+      # - targets:
+      #   - 10.14.240.105
+      #   labels:
+      #     zone: '04'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.106
+      #   labels:
+      #     zone: '04'
+      #     name: ''
+      - targets:
+        - 10.14.240.107	
+        labels:
+          zone: '04'
+          name: 'ВК-4.1'
+      - targets:
+        - 10.14.240.108	
+        labels:
+          zone: '04'
+          name: 'ВК-4.2'
+      - targets:
+        - 10.14.240.109	
+        labels:
+          zone: '04'
+          name: 'ВК-4.3'
+      - targets:
+        - 10.14.240.110	
+        labels:
+          zone: '04'
+          name: 'ВК-4.4'
+      - targets:
+        - 10.14.240.111	
+        labels:
+          zone: '04'
+          name: 'ВК-4.5'
+      - targets:
+        - 10.14.240.112	
+        labels:
+          zone: '04'
+          name: 'ВК-4.6'
+      - targets:
+        - 10.14.240.113	
+        labels:
+          zone: '04'
+          name: 'ВК-4.7'
+      - targets:
+        - 10.14.240.114	
+        labels:
+          zone: '04'
+          name: 'ВК-4.8'
+      - targets:
+        - 10.14.240.115	 
+        labels:
+          zone: '04'
+          name: 'Контроллер ТПИ-4.1'
+      - targets:
+        - 10.14.240.116	 
+        labels:
+          zone: '04'
+          name: 'Контроллер ТПИ-4.2'
+      - targets:
+        - 10.14.240.117	
+        labels:
+          zone: '04'
+          name: 'СВК-4'
+      - targets:
+        - 10.14.240.118	
+        labels:
+          zone: '04'
+          name: 'МиниПК для управления ТПИ-4'
+      - targets:
+        - 10.14.240.119	
+        labels:
+          zone: '04'
+          name: 'Контроллер ТПИ-4.3'
+      - targets:
+        - 10.14.240.120	
+        labels:
+          zone: '04'
+          name: 'Контроллер ТПИ-4.4'
+      # - targets:
+      #   - 10.14.240.121	
+      #   labels:
+      #     zone: '04'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.122	
+      #   labels:
+      #     zone: '04'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.123	
+      #   labels:
+      #     zone: '04'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.124	
+      #   labels:
+      #     zone: '04'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.125	
+      #   labels:
+      #     zone: '04'
+      #     name: ''
+      - targets:
+        - 10.14.240.126	
+        labels:
+          zone: '04'
+          name: 'Конвертер-4 RS-485 для счётчика э/э'
+      # - targets:
+      #   - 10.14.240.127	
+      #   labels:
+      #     zone: '04'
+      #     name: 'Широковещательный адрес'
+      
+      #Участок 5
+      # - targets:
+      #   - 10.14.240.129	
+      #   labels:
+      #     zone: '05'
+      #     name: 'Vipnet HW 100 N3'
+      # - targets:
+      #   - 10.14.240.130	
+      #   labels:
+      #     zone: '05'
+      #     name: ''
+      - targets:
+        - 10.14.240.131	
+        labels:
+          zone: '05'
+          name: 'Коммутатор ASW-5.1'
+      - targets:
+        - 10.14.240.132	
+        labels:
+          zone: '05'
+          name: 'Коммутатор ASW-5.2'
+      - targets:
+        - 10.14.240.133	
+        labels:
+          zone: '05'
+          name: 'Коммутатор ASW-5.3 в ШКТС-5'
+      - targets:
+        - 10.14.240.134	
+        labels:
+          zone: '05'
+          name: 'ИБП-5'
+      # - targets:
+      #   - 10.14.240.135	
+      #   labels:
+      #     zone: '05'
+      #     name: 'С2000-5'
+      - targets:
+        - 10.14.240.136	
+        labels:
+          zone: '05'
+          name: 'АДМС-5'
+      # - targets:
+      #   - 10.14.240.137	
+      #   labels:
+      #     zone: '05'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.138	
+      #   labels:
+      #     zone: '05'
+      #     name: ''
+      - targets:
+        - 10.14.240.139	
+        labels:
+          zone: '05'
+          name: 'ВК-5.1'
+      - targets:
+        - 10.14.240.140	
+        labels:
+          zone: '05'
+          name: 'ВК-5.2'
+      - targets:
+        - 10.14.240.141	
+        labels:
+          zone: '05'
+          name: 'ВК-5.3'
+      - targets:
+        - 10.14.240.142	
+        labels:
+          zone: '05'
+          name: 'ВК-5.4'
+      - targets:
+        - 10.14.240.143	
+        labels:
+          zone: '05'
+          name: 'ВК-5.5'
+      - targets:
+        - 10.14.240.144	
+        labels:
+          zone: '05'
+          name: 'ВК-5.6'
+      - targets:
+        - 10.14.240.145	
+        labels:
+          zone: '05'
+          name: 'ВК-5.7'
+      - targets:
+        - 10.14.240.146	
+        labels:
+          zone: '05'
+          name: 'ВК-5.8'
+      - targets:
+        - 10.14.240.147	
+        labels:
+          zone: '05'
+          name: 'Контроллер ТПИ-5.1'
+      - targets:
+        - 10.14.240.148	
+        labels:
+          zone: '05'
+          name: 'Контроллер ТПИ-5.2'
+      - targets:
+        - 10.14.240.149	
+        labels:
+          zone: '05'
+          name: 'СВК-5'
+      - targets:
+        - 10.14.240.150	
+        labels:
+          zone: '05'
+          name: 'МиниПК для управления ТПИ-5'
+      - targets:
+        - 10.14.240.151	
+        labels:
+          zone: '05'
+          name: 'Контроллер ТПИ-5.3'
+      - targets:
+        - 10.14.240.152	
+        labels:
+          zone: '05'
+          name: 'Контроллер ТПИ-5.4'
+      # - targets:
+      #   - 10.14.240.153	
+      #   labels:
+      #     zone: '05'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.154	
+      #   labels:
+      #     zone: '05'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.155	
+      #   labels:
+      #     zone: '05'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.156	
+      #   labels:
+      #     zone: '05'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.157	
+      #   labels:
+      #     zone: '05'
+      #     name: ''
+      - targets:
+        - 10.14.240.158	
+        labels:
+          zone: '05'
+          name: 'Конвертер-5 RS-485 для счётчика э/э'
+      # - targets:
+      #   - 10.14.240.159	
+      #   labels:
+      #     zone: '05'
+      #     name: 'Широковещательный адрес'
+      
+      #Участок 6
+      # - targets:
+      #   - 10.14.240.161	
+      #   labels:
+      #     zone: '06'
+      #     name: 'Vipnet HW 100 N3'
+      # - targets:
+      #   - 10.14.240.162	
+      #   labels:
+      #     zone: '06'
+      #     name: ''
+      - targets:
+        - 10.14.240.163	
+        labels:
+          zone: '06'
+          name: 'Коммутатор ASW-6.1'
+      - targets:
+        - 10.14.240.164	
+        labels:
+          zone: '06'
+          name: 'Коммутатор ASW-6.2'
+      - targets:
+        - 10.14.240.165	
+        labels:
+          zone: '06'
+          name: 'Коммутатор ASW-6.3 в ШКТС-6'
+      - targets:
+        - 10.14.240.166	
+        labels:
+          zone: '06'
+          name: 'ИБП-6'
+      # - targets:
+      #   - 10.14.240.167	
+      #   labels:
+      #     zone: '06'
+      #     name: 'С2000-6'
+      - targets:
+        - 10.14.240.168	
+        labels:
+          zone: '06'
+          name: 'АДМС-6'
+      # - targets:
+      #   - 10.14.240.169	
+      #   labels:
+      #     zone: '06'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.170
+      #   labels:
+      #     zone: '06'
+      #     name: ''
+      - targets:
+        - 10.14.240.171	
+        labels:
+          zone: '06'
+          name: 'ВК-6.1'
+      - targets:
+        - 10.14.240.172	
+        labels:
+          zone: '06'
+          name: 'ВК-6.2'
+      - targets:
+        - 10.14.240.173	
+        labels:
+          zone: '06'
+          name: 'ВК-6.3'
+      - targets:
+        - 10.14.240.174	
+        labels:
+          zone: '06'
+          name: 'ВК-6.4'
+      - targets:
+        - 10.14.240.175	
+        labels:
+          zone: '06'
+          name: 'ВК-6.5'
+      - targets:
+        - 10.14.240.176	
+        labels:
+          zone: '06'
+          name: 'ВК-6.6'
+      - targets:
+        - 10.14.240.177	
+        labels:
+          zone: '06'
+          name: 'ВК-6.7'
+      - targets:
+        - 10.14.240.178	
+        labels:
+          zone: '06'
+          name: 'ВК-6.8'
+      - targets:
+        - 10.14.240.179	
+        labels:
+          zone: '06'
+          name: 'Контроллер ТПИ-6.1'
+      - targets:
+        - 10.14.240.180	
+        labels:
+          zone: '06'
+          name: 'Контроллер ТПИ-6.2'
+      - targets:
+        - 10.14.240.181	
+        labels:
+          zone: '06'
+          name: 'СВК-6'
+      - targets:
+        - 10.14.240.182	
+        labels:
+          zone: '06'
+          name: 'МиниПК для управления ТПИ-6'
+      - targets:
+        - 10.14.240.183	
+        labels:
+          zone: '06'
+          name: 'Контроллер ТПИ-6.3'
+      - targets:
+        - 10.14.240.184	
+        labels:
+          zone: '06'
+          name: 'Контроллер ТПИ-6.4'
+      # - targets:
+      #   - 10.14.240.185	
+      #   labels:
+      #     zone: '06'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.186	
+      #   labels:
+      #     zone: '06'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.187	
+      #   labels:
+      #     zone: '06'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.188	
+      #   labels:
+      #     zone: '06'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.189	
+      #   labels:
+      #     zone: '06'
+      #     name: ''
+      - targets:
+        - 10.14.240.190	
+        labels:
+          zone: '06'
+          name: 'Конвертер-6 RS-485 для счётчика э/э'
+      # - targets:
+      #   - 10.14.240.191	
+      #   labels:
+      #     zone: '06'
+      #     name: 'Широковещательный адрес'
+      
+      #Участок 7
+      # - targets:
+      #   - 10.14.240.193	
+      #   labels:
+      #     zone: '07'
+      #     name: 'Vipnet HW 100 N3'
+      # - targets:
+      #   - 10.14.240.194	
+      #   labels:
+      #     zone: '07'
+      #     name: ''
+      - targets:
+        - 10.14.240.195	
+        labels:
+          zone: '07'
+          name: 'Коммутатор ASW-7.1'
+      - targets:
+        - 10.14.240.196	
+        labels:
+          zone: '07'
+          name: 'Коммутатор ASW-7.2'
+      - targets:
+        - 10.14.240.197	
+        labels:
+          zone: '07'
+          name: 'Коммутатор ASW-7.3 в ШКТС-7'
+      - targets:
+        - 10.14.240.198	
+        labels:
+          zone: '07'
+          name: 'ИБП-7'
+      # - targets:
+      #   - 10.14.240.199	
+      #   labels:
+      #     zone: '07'
+      #     name: 'С2000-7'
+      - targets:
+        - 10.14.240.200	
+        labels:
+          zone: '07'
+          name: 'АДМС-7'
+      # - targets:
+      #   - 10.14.240.201	
+      #   labels:
+      #     zone: '07'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.202	
+      #   labels:
+      #     zone: '07'
+      #     name: ''
+      - targets:
+        - 10.14.240.203	
+        labels:
+          zone: '07'
+          name: 'ВК-7.1'
+      - targets:
+        - 10.14.240.204	
+        labels:
+          zone: '07'
+          name: 'ВК-7.2'
+      - targets:
+        - 10.14.240.205	
+        labels:
+          zone: '07'
+          name: 'ВК-7.3'
+      - targets:
+        - 10.14.240.206	
+        labels:
+          zone: '07'
+          name: 'ВК-7.4'
+      - targets:
+        - 10.14.240.207	
+        labels:
+          zone: '07'
+          name: 'ВК-7.5'
+      - targets:
+        - 10.14.240.208	
+        labels:
+          zone: '07'
+          name: 'ВК-7.6'
+      - targets:
+        - 10.14.240.209	
+        labels:
+          zone: '07'
+          name: 'ВК-7.7'
+      - targets:
+        - 10.14.240.210	
+        labels:
+          zone: '07'
+          name: 'ВК-7.8'
+      - targets:
+        - 10.14.240.211	
+        labels:
+          zone: '07'
+          name: 'Контроллер ТПИ-7.1'
+      - targets:
+        - 10.14.240.212	
+        labels:
+          zone: '07'
+          name: 'Контроллер ТПИ-7.2'
+      - targets:
+        - 10.14.240.213	
+        labels:
+          zone: '07'
+          name: 'СВК-7'
+      - targets:
+        - 10.14.240.214	
+        labels:
+          zone: '07'
+          name: 'МиниПК для управления ТПИ-7'
+      - targets:
+        - 10.14.240.215	
+        labels:
+          zone: '07'
+          name: 'Контроллер ТПИ-7.3'
+      - targets:
+        - 10.14.240.216	
+        labels:
+          zone: '07'
+          name: 'Контроллер ТПИ-7.4'
+      # - targets:
+      #   - 10.14.240.217	
+      #   labels:
+      #     zone: '07'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.218	
+      #   labels:
+      #     zone: '07'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.219	
+      #   labels:
+      #     zone: '07'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.220	
+      #   labels:
+      #     zone: '07'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.221	
+      #   labels:
+      #     zone: '07'
+      #     name: ''
+      - targets:
+        - 10.14.240.222	
+        labels:
+          zone: '07'
+          name: 'Конвертер-7 RS-485 для счётчика э/э'
+      # - targets:
+      #   - 10.14.240.223	
+      #   labels:
+      #     zone: '07'
+      #     name: 'Широковещательный адрес'
+
+      #Участок 8
+      # - targets:
+      #   - 10.14.240.225	
+      #   labels:
+      #     zone: '08'
+      #     name: 'Vipnet HW 100 N3'
+      - targets:
+        - 10.14.240.226
+        labels:
+          zone: '08'
+          name: 'МиниПК-8'
+      - targets:
+        - 10.14.240.227	
+        labels:
+          zone: '08'
+          name: 'Коммутатор ASW-8.1'
+      - targets:
+        - 10.14.240.228	
+        labels:
+          zone: '08'
+          name: 'Коммутатор ASW-8.2'
+      - targets:
+        - 10.14.240.229	
+        labels:
+          zone: '08'
+          name: 'Коммутатор ASW-8.3 в ШКТС-8'
+      - targets:
+        - 10.14.240.230	
+        labels:
+          zone: '08'
+          name: 'ИБП-8'
+      # - targets:
+      #   - 10.14.240.231	
+      #   labels:
+      #     zone: '08'
+      #     name: 'С2000-8'
+      - targets:
+        - 10.14.240.232	
+        labels:
+          zone: '08'
+          name: 'АДМС-8'
+      - targets:
+        - 10.14.240.233	
+        labels:
+          zone: '08'
+          name: 'Изернет реле 8.1'
+      - targets:
+        - 10.14.240.234	
+        labels:
+          zone: '08'
+          name: 'Изернет реле 8.2'
+      - targets:
+        - 10.14.240.235	
+        labels:
+          zone: '08'
+          name: 'ВК-8.1'
+      - targets:
+        - 10.14.240.236	
+        labels:
+          zone: '08'
+          name: 'ВК-8.2'
+      - targets:
+        - 10.14.240.237	
+        labels:
+          zone: '08'
+          name: 'ВК-8.3'
+      - targets:
+        - 10.14.240.238	
+        labels:
+          zone: '08'
+          name: 'ВК-8.4'
+      - targets:
+        - 10.14.240.239	
+        labels:
+          zone: '08'
+          name: 'ВК-8.5'
+      - targets:
+        - 10.14.240.240	
+        labels:
+          zone: '08'
+          name: 'ВК-8.6'
+      - targets:
+        - 10.14.240.241	
+        labels:
+          zone: '08'
+          name: 'ВК-8.7'
+      - targets:
+        - 10.14.240.242	
+        labels:
+          zone: '08'
+          name: 'ВК-8.8'
+      - targets:
+        - 10.14.240.243	
+        labels:
+          zone: '08'
+          name: 'Контроллер ТПИ-8.1'
+      - targets:
+        - 10.14.240.244	
+        labels:
+          zone: '08'
+          name: 'Контроллер ТПИ-8.2'
+      - targets:
+        - 10.14.240.245	
+        labels:
+          zone: '08'
+          name: 'СВК-8'
+      - targets:
+        - 10.14.240.246	
+        labels:
+          zone: '08'
+          name: 'Умное освещение'
+      - targets:
+        - 10.14.240.247	
+        labels:
+          zone: '08'
+          name: 'Микроклимот ШКТС'
+      - targets:
+        - 10.14.240.248	
+        labels:
+          zone: '08'
+          name: 'Стабилизатор напряжения Штиль'
+      # - targets:
+      #   - 10.14.240.249	
+      #   labels:
+      #     zone: '08'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.250	
+      #   labels:
+      #     zone: '08'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.251	
+      #   labels:
+      #     zone: '08'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.252	
+      #   labels:
+      #     zone: '08'
+      #     name: ''
+      # - targets:
+      #   - 10.14.240.253	
+      #   labels:
+      #     zone: '08'
+      #     name: ''
+      - targets:
+        - 10.14.240.254	
+        labels:
+          zone: '08'
+          name: 'Конвертер-8 RS-485 для счётчика э/э'
+      # - targets:
+      #   - 10.14.240.255	
+      #   labels:
+      #     zone: '08'
+      #     name: 'Широковещательный адрес'
+      
+      #Участок 9
+      # - targets:
+      #   - 10.14.241.1	
+      #   labels:
+      #     zone: '09'
+      #     name: 'Vipnet HW 100 N3'
+      # - targets:
+      #   - 10.14.241.2	
+      #   labels:
+      #     zone: '09'
+      #     name: ''
+      - targets:
+        - 10.14.241.3	
+        labels:
+          zone: '09'
+          name: 'Коммутатор ASW-9.1'
+      - targets:
+        - 10.14.241.4	
+        labels:
+          zone: '09'
+          name: 'Коммутатор ASW-9.2'
+      - targets:
+        - 10.14.241.5	
+        labels:
+          zone: '09'
+          name: 'Коммутатор ASW-9.3 в ШКТС-9'
+      - targets:
+        - 10.14.241.6	
+        labels:
+          zone: '09'
+          name: 'ИБП-9'
+      # - targets:
+      #   - 10.14.241.7	
+      #   labels:
+      #     zone: '09'
+      #     name: 'С2000-9'
+      - targets:
+        - 10.14.241.8	
+        labels:
+          zone: '09'
+          name: 'АДМС-9'
+      # - targets:
+      #   - 10.14.241.9	
+      #   labels:
+      #     zone: '09'
+      #     name: ''
+      # - targets:
+      #   - 10.14.241.10
+      #   labels:
+      #     zone: '09'
+      #     name: ''
+      - targets:
+        - 10.14.241.11	
+        labels:
+          zone: '09'
+          name: 'ВК-9.1'
+      - targets:
+        - 10.14.241.12	
+        labels:
+          zone: '09'
+          name: 'ВК-9.2'
+      - targets:
+        - 10.14.241.13	
+        labels:
+          zone: '09'
+          name: 'ВК-9.3'
+      - targets:
+        - 10.14.241.14	
+        labels:
+          zone: '09'
+          name: 'ВК-9.4'
+      - targets:
+        - 10.14.241.15	
+        labels:
+          zone: '09'
+          name: 'ВК-9.5'
+      - targets:
+        - 10.14.241.16	
+        labels:
+          zone: '09'
+          name: 'ВК-9.6'
+      - targets:
+        - 10.14.241.17	
+        labels:
+          zone: '09'
+          name: 'ВК-9.7'
+      - targets:
+        - 10.14.241.18	
+        labels:
+          zone: '09'
+          name: 'ВК-9.8'
+      - targets:
+        - 10.14.241.19	
+        labels:
+          zone: '09'
+          name: 'Контроллер ТПИ-9.1'
+      - targets:
+        - 10.14.241.20	
+        labels:
+          zone: '09'
+          name: 'Контроллер ТПИ-9.2'
+      - targets:
+        - 10.14.241.21	
+        labels:
+          zone: '09'
+          name: 'СВК-9'
+      - targets:
+        - 10.14.241.22	
+        labels:
+          zone: '09'
+          name: 'МиниПК для управления ТПИ-9'
+      # - targets:
+      #   - 10.14.241.23	
+      #   labels:
+      #     zone: '09'
+      #     name: ''
+      # - targets:
+      #   - 10.14.241.24	
+      #   labels:
+      #     zone: '09'
+      #     name: ''
+      # - targets:
+      #   - 10.14.241.25	
+      #   labels:
+      #     zone: '09'
+      #     name: ''
+      # - targets:
+      #   - 10.14.241.26	
+      #   labels:
+      #     zone: '09'
+      #     name: ''
+      # - targets:
+      #   - 10.14.241.27	
+      #   labels:
+      #     zone: '09'
+      #     name: ''
+      # - targets:
+      #   - 10.14.241.28	
+      #   labels:
+      #     zone: '09'
+      #     name: ''
+      # - targets:
+      #   - 10.14.241.29	
+      #   labels:
+      #     zone: '09'
+      #     name: ''
+      - targets:
+        - 10.14.241.30	
+        labels:
+          zone: '09'
+          name: 'Конвертер-9 RS-485 для счётчика э/э'
+      # - targets:
+      #   - 10.14.241.31	
+      #   labels:
+      #     zone: '09'
+      #     name: 'Широковещательный адрес'
+      
+      #Участок 10
+      # - targets:
+      #   - 10.14.241.33	
+      #   labels:
+      #     zone: '10'
+      #     name: 'Vipnet HW 100 N3'
+      # - targets:
+      #   - 10.14.241.34	
+      #   labels:
+      #     zone: '10'
+      #     name: ''
+      - targets:
+        - 10.14.241.35	
+        labels:
+          zone: '10'
+          name: 'Коммутатор ASW-10.1'
+      - targets:
+        - 10.14.241.36	
+        labels:
+          zone: '10'
+          name: 'Коммутатор ASW-10.2'
+      - targets:
+        - 10.14.241.37	
+        labels:
+          zone: '10'
+          name: 'Коммутатор ASW-10.3 в ШКТС-10'
+      - targets:
+        - 10.14.241.38	
+        labels:
+          zone: '10'
+          name: 'ИБП-10'
+      # - targets:
+      #   - 10.14.241.39	
+      #   labels:
+      #     zone: '10'
+      #     name: 'С2000-10'
+      - targets:
+        - 10.14.241.40	
+        labels:
+          zone: '10'
+          name: 'АДМС-10'
+      # - targets:
+      #   - 10.14.241.41
+      #   labels:
+      #     zone: '10'
+      #     name: ''
+      # - targets:
+      #   - 10.14.241.42
+      #   labels:
+      #     zone: '10'
+      #     name: ''
+      - targets:
+        - 10.14.241.43	
+        labels:
+          zone: '10'
+          name: 'ВК-10.1'
+      - targets:
+        - 10.14.241.44	
+        labels:
+          zone: '10'
+          name: 'ВК-10.2'
+      - targets:
+        - 10.14.241.45	
+        labels:
+          zone: '10'
+          name: 'ВК-10.3'
+      - targets:
+        - 10.14.241.46	
+        labels:
+          zone: '10'
+          name: 'ВК-10.4'
+      - targets:
+        - 10.14.241.47	
+        labels:
+          zone: '10'
+          name: 'ВК-10.5'
+      - targets:
+        - 10.14.241.48	
+        labels:
+          zone: '10'
+          name: 'ВК-10.6'
+      - targets:
+        - 10.14.241.49	
+        labels:
+          zone: '10'
+          name: 'ВК-10.7'
+      - targets:
+        - 10.14.241.50	
+        labels:
+          zone: '10'
+          name: 'ВК-10.8'
+      - targets:
+        - 10.14.241.51	
+        labels:
+          zone: '10'
+          name: 'Контроллер ТПИ-10.1'
+      - targets:
+        - 10.14.241.52	
+        labels:
+          zone: '10'
+          name: 'Контроллер ТПИ-10.2'
+      - targets:
+        - 10.14.241.53	
+        labels:
+          zone: '10'
+          name: 'СВК-10'
+      - targets:
+        - 10.14.241.54	
+        labels:
+          zone: '10'
+          name: 'МиниПК для управления ТПИ-10'
+      - targets:
+        - 10.14.241.55	
+        labels:
+          zone: '10'
+          name: 'Контроллер ТПИ-10.3'
+      - targets:
+        - 10.14.241.56	
+        labels:
+          zone: '10'
+          name: 'Контроллер ТПИ-10.4'
+      # - targets:
+      #   - 10.14.241.57	
+      #   labels:
+      #     zone: '10'
+      #     name: ''
+      # - targets:
+      #   - 10.14.241.58	
+      #   labels:
+      #     zone: '10'
+      #     name: ''
+      # - targets:
+      #   - 10.14.241.59	
+      #   labels:
+      #     zone: '10'
+      #     name: ''
+      # - targets:
+      #   - 10.14.241.60	
+      #   labels:
+      #     zone: '10'
+      #     name: ''
+      # - targets:
+      #   - 10.14.241.61	
+      #   labels:
+      #     zone: '10'
+      #     name: ''
+      - targets:
+        - 10.14.241.62	
+        labels:
+          zone: '10'
+          name: 'Конвертер-10 RS-485 для счётчика э/э'
+      # - targets:
+      #   - 10.14.241.63	
+      #   labels:
+      #     zone: '10'
+      #     name: 'Широковещательный адрес'
+      
+      #Участок 11
+      # - targets:
+      #   - 10.14.241.65	
+      #   labels:
+      #     zone: '11'
+      #     name: 'Vipnet HW 100 N3'
+      # - targets:
+      #   - 10.14.241.66	
+      #   labels:
+      #     zone: '11'
+      #     name: ''
+      - targets:
+        - 10.14.241.67	
+        labels:
+          zone: '11'
+          name: 'Коммутатор ASW-11.1'
+      - targets:
+        - 10.14.241.68	
+        labels:
+          zone: '11'
+          name: 'Коммутатор ASW-11.2'
+      - targets:
+        - 10.14.241.69	
+        labels:
+          zone: '11'
+          name: 'Коммутатор ASW-11.3 в ШКТС-11'
+      - targets:
+        - 10.14.241.70	
+        labels:
+          zone: '11'
+          name: 'ИБП-11'
+      # - targets:
+      #   - 10.14.241.71	
+      #   labels:
+      #     zone: '11'
+      #     name: 'С2000-11'
+      - targets:
+        - 10.14.241.72	
+        labels:
+          zone: '11'
+          name: 'АДМС-11'
+      # - targets:
+      #   - 10.14.241.73	
+      #   labels:
+      #     zone: '11'
+      #     name: ''
+      # - targets:
+      #   - 10.14.241.74	
+      #   labels:
+      #     zone: '11'
+      #     name: ''
+      - targets:
+        - 10.14.241.75	
+        labels:
+          zone: '11'
+          name: 'ВК-11.1'
+      - targets:
+        - 10.14.241.76	
+        labels:
+          zone: '11'
+          name: 'ВК-11.2'
+      - targets:
+        - 10.14.241.77	
+        labels:
+          zone: '11'
+          name: 'ВК-11.3'
+      - targets:
+        - 10.14.241.78	
+        labels:
+          zone: '11'
+          name: 'ВК-11.4'
+      - targets:
+        - 10.14.241.79	
+        labels:
+          zone: '11'
+          name: 'ВК-11.5'
+      - targets:
+        - 10.14.241.80	
+        labels:
+          zone: '11'
+          name: 'ВК-11.6'
+      - targets:
+        - 10.14.241.81	
+        labels:
+          zone: '11'
+          name: 'ВК-11.7'
+      - targets:
+        - 10.14.241.82	
+        labels:
+          zone: '11'
+          name: 'ВК-11.8'
+      - targets:
+        - 10.14.241.83	
+        labels:
+          zone: '11'
+          name: 'Контроллер ТПИ-11.1'
+      - targets:
+        - 10.14.241.84	
+        labels:
+          zone: '11'
+          name: 'Контроллер ТПИ-11.2'
+      - targets:
+        - 10.14.241.85	
+        labels:
+          zone: '11'
+          name: 'СВК-11'
+      - targets:
+        - 10.14.241.86	
+        labels:
+          zone: '11'
+          name: 'МиниПК для управления ТПИ-11'
+      - targets:
+        - 10.14.241.87	
+        labels:
+          zone: '11'
+          name: 'Контроллер ТПИ-11.3'
+      - targets:
+        - 10.14.241.88	
+        labels:
+          zone: '11'
+          name: 'Контроллер ТПИ-11.4'
+      # - targets:
+      #   - 10.14.241.89	
+      #   labels:
+      #     zone: '11'
+      #     name: ''
+      # - targets:
+      #   - 10.14.241.90	
+      #   labels:
+      #     zone: '11'
+      #     name: ''
+      # - targets:
+      #   - 10.14.241.91	
+      #   labels:
+      #     zone: '11'
+      #     name: ''
+      # - targets:
+      #   - 10.14.241.92	
+      #   labels:
+      #     zone: '11'
+      #     name: ''
+      # - targets:
+      #   - 10.14.241.93	
+      #   labels:
+      #     zone: '11'
+      #     name: ''
+      - targets:
+        - 10.14.241.94	
+        labels:
+          zone: '11'
+          name: 'Конвертер-11 RS-485 для счётчика э/э'
+      # - targets:
+      #   - 10.14.241.95	
+      #   labels:
+      #     zone: '11'
+      #     name: 'Широковещательный адрес'
+      
+      # #Резерв
+      # - targets:
+      #   - 10.14.241.9602
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.97	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.98	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.99	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.100	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.101	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.102	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.103	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.104	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.105	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.106	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.107	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.108	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.109	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.110	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.111	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.112	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.113	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.114	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.115	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.116	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.117	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.118	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.119	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.120	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.121	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.122	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.123	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.124	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.125	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.126	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.127	
+      #   labels:
+      #     zone03:
+      #     name:
+      # - targets:
+      #   - 10.14.241.128	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.129	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.130	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.131	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.132	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.133	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.134	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.135	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.136	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.137	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.138	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.139	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.140	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.141	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.142	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.143	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.144	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.145	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.146	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.147	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.148	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.149	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.150	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.151	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.152	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.153	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.154	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.155	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.156	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.157	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.158	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.159	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.160	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.161	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.162	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.163	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.164	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.165	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.166	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.167	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.168	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.169	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.170	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.171	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.172	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.173	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.174	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.175	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.176	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.177	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.178	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.179	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.180	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.181	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.182	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.183	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.184	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.185	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.186	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.187	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.188	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.189	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.190	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.191	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.192	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.193	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.194	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.195	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.196	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.197	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.198	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.199	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.200	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.201	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.202	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.203	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.204	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.205	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.206	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.207	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.208	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.209	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.210	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.211	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.212	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.213	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.214	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.215	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.216	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.217	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.218	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.219	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.220	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.221	
+      #   labels:
+      #     zone:
+      #     name06:
+      # - targets:
+      #   - 10.14.241.222	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.223	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.224	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.225	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.226	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.227	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.228	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.229	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.230	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.231	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.232	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.233	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.234	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.235	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.236	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.237	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.238	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.239	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.240	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.241	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.242	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.243	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.244	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.245	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.246	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.247	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.248	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.249	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.250	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.251	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.252	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.1407.241.253	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.254	
+      #   labels:
+      #     zone:
+      #     name:
+      # - targets:
+      #   - 10.14.241.255	
+      #   labels:
+      #     zone:
+      #     name:
+      
+      #Салехард 1331
+      - targets:
+        - 10.14.242.1	
+        labels:
+          zone: 'Салехард 1331'
+          name: 'Шлюз'
+      - targets:
+        - 10.14.242.2	
+        labels:
+          zone: 'Салехард 1331'
+          name: 'Контроллер ТПИ'
+      - targets:
+        - 10.14.242.3	
+        labels:
+          zone: 'Салехард 1331'
+          name: 'МиниПК'
+      - targets:
+        - 10.14.242.4	
+        labels:
+          zone: 'Салехард 1331'
+          name: 'Коммутатор Tfortis'
+      - targets:
+        - 10.14.242.5	
+        labels:
+          zone: 'Салехард 1331'
+          name: 'Управляемый коммутатор'
+      - targets:
+        - 10.14.242.6	
+        labels:
+          zone: 'Салехард 1331'
+          name: 'АДМС-1331 км'
+      # - targets:
+      #   - 10.14.242.7	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.8	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.9	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.10	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.11	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.12	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.13	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.14	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.15	
+      #   labels:
+      #     zone: 'Салехард 1331'
+      #     name: 'Широковещательный'
+      
+      #Карамовский пост
+      # - targets:
+      #   - 10.14.242.16	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      - targets:
+        - 10.14.242.17	
+        labels:
+          zone: 'Карамовский пост'
+          name: 'Шлюз'
+      - targets:
+        - 10.14.242.18	
+        labels:
+          zone: 'Карамовский пост'
+          name: 'Контроллер ТПИ-1 (Ноябрьск)'
+      - targets:
+        - 10.14.242.19	
+        labels:
+          zone: 'Карамовский пост'
+          name: 'Контроллер ТПИ-2 (Салехард)'
+      - targets:
+        - 10.14.242.20	
+        labels:
+          zone: 'Карамовский пост'
+          name: 'Контроллер ТПИ-3 (Сургут)'
+      - targets:
+        - 10.14.242.21	
+        labels:
+          zone: 'Карамовский пост'
+          name: 'МиниПК'
+      # - targets:
+      #   - 10.14.242.22	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.23	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.24	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.25	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.26	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.27	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.28	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.29	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.30	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.31	
+      #   labels:
+      #     zone: 'Карамовский пост'
+      #     name: 'Широковещательный'
+
+      #Надым 993+638 км
+      - targets:
+        - 10.14.242.33	
+        labels:
+          zone: 'Надым 993+638 км'
+          name: 'Шлюз'
+      - targets:
+        - 10.14.242.34	
+        labels:
+          zone: 'Надым 993+638 км'
+          name: 'Контроллер ТПИ'
+      - targets:
+        - 10.14.242.35	
+        labels:
+          zone: 'Надым 993+638 км'
+          name: 'Контроллер ЗПИ'
+      - targets:
+        - 10.14.242.36	
+        labels:
+          zone: 'Надым 993+638 км'
+          name: 'МиниПК'
+      - targets:
+        - 10.14.242.37	
+        labels:
+          zone: 'Надым 993+638 км'
+          name: 'Коммутатор Tfortis'
+      # - targets:
+      #   - 10.14.242.38	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.39	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.40	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.41	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.42	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.43	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.44	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.45	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.46	
+      #   labels:
+      #     zone: ''
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.47	
+      #   labels:
+      #     zone: 'Надым 993+638 км'
+      #     name: 'Широковещательный'
+      
+      #ТПИ км 15+875
+      - targets:
+        - 10.14.242.49
+        labels:
+          zone: 'ТПИ км 15+875'
+          name: 'Шлюз'
+      - targets:
+        - 10.14.242.50
+        labels:
+          zone: 'ТПИ км 15+875'
+          name: 'МиниПК'
+      - targets:
+        - 10.14.242.51
+        labels:
+          zone: 'ТПИ км 15+875'
+          name: 'Контр. Laurent-5G'
+      - targets:
+        - 10.14.242.52
+        labels:
+          zone: 'ТПИ км 15+875'
+          name: 'Контроллер ТПИ'
+      - targets:
+        - 10.14.242.53
+        labels:
+          zone: 'ТПИ км 15+875'
+          name: 'Контроллер ЗПИ'
+      - targets:
+        - 10.14.242.54
+        labels:
+          zone: 'ТПИ км 15+875'
+          name: 'L2 Коммутатор LTV'
+      # - targets:
+      #   - 10.14.242.55
+      #   labels:
+      #     zone: 'ТПИ км 15+875'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.56
+      #   labels:
+      #     zone: 'ТПИ км 15+875'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.57
+      #   labels:
+      #     zone: 'ТПИ км 15+875'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.58
+      #   labels:
+      #     zone: 'ТПИ км 15+875'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.59
+      #   labels:
+      #     zone: 'ТПИ км 15+875'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.60
+      #   labels:
+      #     zone: 'ТПИ км 15+875'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.61
+      #   labels:
+      #     zone: 'ТПИ км 15+875'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.62
+      #   labels:
+      #     zone: 'ТПИ км 15+875'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.63
+      #   labels:
+      #     zone: 'ТПИ км 15+875'
+      #     name: 'Широковещательный'
+
+      #ТПИ км 5+700
+      - targets:
+        - 10.14.242.65
+        labels:
+          zone: 'ТПИ км 5+700'
+          name: 'Шлюз'
+      - targets:
+        - 10.14.242.66
+        labels:
+          zone: 'ТПИ км 5+700'
+          name: 'МиниПК'
+      - targets:
+        - 10.14.242.67
+        labels:
+          zone: 'ТПИ км 5+700'
+          name: 'Контр. Laurent-5G'
+      - targets:
+        - 10.14.242.68
+        labels:
+          zone: 'ТПИ км 5+700'
+          name: 'Контроллер ТПИ'
+      - targets:
+        - 10.14.242.69
+        labels:
+          zone: 'ТПИ км 5+700'
+          name: 'Контроллер ЗПИ'
+      - targets:
+        - 10.14.242.70
+        labels:
+          zone: 'ТПИ км 5+700'
+          name: 'L2 Коммутатор LTV'
+      # - targets:
+      #   - 10.14.242.71
+      #   labels:
+      #     zone: 'ТПИ км 5+700'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.72
+      #   labels:
+      #     zone: 'ТПИ км 5+700'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.73
+      #   labels:
+      #     zone: 'ТПИ км 5+700'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.74
+      #   labels:
+      #     zone: 'ТПИ км 5+700'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.75
+      #   labels:
+      #     zone: 'ТПИ км 5+700'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.76
+      #   labels:
+      #     zone: 'ТПИ км 5+700'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.77
+      #   labels:
+      #     zone: 'ТПИ км 5+700'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.78
+      #   labels:
+      #     zone: 'ТПИ км 5+700'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.79
+      #   labels:
+      #     zone: 'ТПИ км 5+700'
+      #     name: 'Широковещательный'
+
+      #ТПИ км 32+170
+      - targets:
+        - 10.14.242.81
+        labels:
+          zone: 'ТПИ км 32+170'
+          name: 'Шлюз'
+      - targets:
+        - 10.14.242.82
+        labels:
+          zone: 'ТПИ км 32+170'
+          name: 'МиниПК'
+      - targets:
+        - 10.14.242.83
+        labels:
+          zone: 'ТПИ км 32+170'
+          name: 'Контр. Laurent-5G'
+      - targets:
+        - 10.14.242.84
+        labels:
+          zone: 'ТПИ км 32+170'
+          name: 'Контроллер ТПИ'
+      - targets:
+        - 10.14.242.85
+        labels:
+          zone: 'ТПИ км 32+170'
+          name: 'Контроллер ЗПИ'
+      - targets:
+        - 10.14.242.86
+        labels:
+          zone: 'ТПИ км 32+170'
+          name: 'L2 Коммутатор LTV'
+      # - targets:
+      #   - 10.14.242.87
+      #   labels:
+      #     zone: 'ТПИ км 32+170'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.88
+      #   labels:
+      #     zone: 'ТПИ км 32+170'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.89
+      #   labels:
+      #     zone: 'ТПИ км 32+170'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.90
+      #   labels:
+      #     zone: 'ТПИ км 32+170'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.91
+      #   labels:
+      #     zone: 'ТПИ км 32+170'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.92
+      #   labels:
+      #     zone: 'ТПИ км 32+170'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.93
+      #   labels:
+      #     zone: 'ТПИ км 32+170'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.94
+      #   labels:
+      #     zone: 'ТПИ км 32+170'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.95
+      #   labels:
+      #     zone: 'ТПИ км 32+170'
+      #     name: 'Широковещательный'
+
+      #ТПИ км 8+099
+      - targets:
+        - 10.14.242.97
+        labels:
+          zone: 'ТПИ км 8+099'
+          name: 'Шлюз'
+      - targets:
+        - 10.14.242.98
+        labels:
+          zone: 'ТПИ км 8+099'
+          name: 'МиниПК'
+      - targets:
+        - 10.14.242.99
+        labels:
+          zone: 'ТПИ км 8+099'
+          name: 'Контр. Laurent-5G'
+      - targets:
+        - 10.14.242.100
+        labels:
+          zone: 'ТПИ км 8+099'
+          name: 'Контроллер ТПИ'
+      - targets:
+        - 10.14.242.101
+        labels:
+          zone: 'ТПИ км 8+099'
+          name: 'Контроллер ЗПИ'
+      - targets:
+        - 10.14.242.102
+        labels:
+          zone: 'ТПИ км 8+099'
+          name: 'L2 Коммутатор LTV'
+      # - targets:
+      #   - 10.14.242.103
+      #   labels:
+      #     zone: 'ТПИ км 8+099'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.104
+      #   labels:
+      #     zone: 'ТПИ км 8+099'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.105
+      #   labels:
+      #     zone: 'ТПИ км 8+099'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.106
+      #   labels:
+      #     zone: 'ТПИ км 8+099'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.107
+      #   labels:
+      #     zone: 'ТПИ км 8+099'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.108
+      #   labels:
+      #     zone: 'ТПИ км 8+099'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.109
+      #   labels:
+      #     zone: 'ТПИ км 8+099'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.110
+      #   labels:
+      #     zone: 'ТПИ км 8+099'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.111
+      #   labels:
+      #     zone: 'ТПИ км 8+099'
+      #     name: 'Широковещательный'
+
+      #ТПИ км 768+528
+      - targets:
+        - 10.14.242.113
+        labels:
+          zone: 'ТПИ км 768+528'
+          name: 'Шлюз'
+      - targets:
+        - 10.14.242.114
+        labels:
+          zone: 'ТПИ км 768+528'
+          name: 'МиниПК'
+      - targets:
+        - 10.14.242.115
+        labels:
+          zone: 'ТПИ км 768+528'
+          name: 'Контр. Laurent-5G'
+      - targets:
+        - 10.14.242.116
+        labels:
+          zone: 'ТПИ км 768+528'
+          name: 'Контроллер ТПИ'
+      - targets:
+        - 10.14.242.117
+        labels:
+          zone: 'ТПИ км 768+528'
+          name: 'Контроллер ЗПИ'
+      - targets:
+        - 10.14.242.118
+        labels:
+          zone: 'ТПИ км 768+528'
+          name: 'L2 Коммутатор LTV'
+      # - targets:
+      #   - 10.14.242.119
+      #   labels:
+      #     zone: 'ТПИ км 768+528'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.120
+      #   labels:
+      #     zone: 'ТПИ км 768+528'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.121
+      #   labels:
+      #     zone: 'ТПИ км 768+528'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.122
+      #   labels:
+      #     zone: 'ТПИ км 768+528'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.123
+      #   labels:
+      #     zone: 'ТПИ км 768+528'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.124
+      #   labels:
+      #     zone: 'ТПИ км 768+528'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.125
+      #   labels:
+      #     zone: 'ТПИ км 768+528'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.126
+      #   labels:
+      #     zone: 'ТПИ км 768+528'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.127
+      #   labels:
+      #     zone: 'ТПИ км 768+528'
+      #     name: 'Широковещательный'
+
+      #ТПИ км 683+635
+      - targets:
+        - 10.14.242.129
+        labels:
+          zone: 'ТПИ км 683+635'
+          name: 'Шлюз'
+      - targets:
+        - 10.14.242.130
+        labels:
+          zone: 'ТПИ км 683+635'
+          name: 'МиниПК'
+      - targets:
+        - 10.14.242.131
+        labels:
+          zone: 'ТПИ км 683+635'
+          name: 'Контр. Laurent-5G'
+      - targets:
+        - 10.14.242.132
+        labels:
+          zone: 'ТПИ км 683+635'
+          name: 'Контроллер ТПИ'
+      - targets:
+        - 10.14.242.133
+        labels:
+          zone: 'ТПИ км 683+635'
+          name: 'Контроллер ЗПИ'
+      - targets:
+        - 10.14.242.134
+        labels:
+          zone: 'ТПИ км 683+635'
+          name: 'L2 Коммутатор LTV'
+      # - targets:
+      #   - 10.14.242.135
+      #   labels:
+      #     zone: 'ТПИ км 683+635'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.136
+      #   labels:
+      #     zone: 'ТПИ км 683+635'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.137
+      #   labels:
+      #     zone: 'ТПИ км 683+635'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.138
+      #   labels:
+      #     zone: 'ТПИ км 683+635'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.139
+      #   labels:
+      #     zone: 'ТПИ км 683+635'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.140
+      #   labels:
+      #     zone: 'ТПИ км 683+635'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.141
+      #   labels:
+      #     zone: 'ТПИ км 683+635'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.142
+      #   labels:
+      #     zone: 'ТПИ км 683+635'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.143
+      #   labels:
+      #     zone: 'ТПИ км 683+635'
+      #     name: 'Широковещательный'
+      
+      #ТПИ км 673+408
+      - targets:
+        - 10.14.242.145
+        labels:
+          zone: 'ТПИ км 673+408'
+          name: 'Шлюз'
+      - targets:
+        - 10.14.242.146
+        labels:
+          zone: 'ТПИ км 673+408'
+          name: 'МиниПК'
+      - targets:
+        - 10.14.242.147
+        labels:
+          zone: 'ТПИ км 673+408'
+          name: 'Контр. Laurent-5G'
+      - targets:
+        - 10.14.242.148
+        labels:
+          zone: 'ТПИ км 673+408'
+          name: 'Контроллер ТПИ'
+      - targets:
+        - 10.14.242.149
+        labels:
+          zone: 'ТПИ км 673+408'
+          name: 'Контроллер ЗПИ'
+      - targets:
+        - 10.14.242.150
+        labels:
+          zone: 'ТПИ км 673+408'
+          name: 'L2 Коммутатор LTV'
+      # - targets:
+      #   - 10.14.242.151
+      #   labels:
+      #     zone: 'ТПИ км 673+408'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.152
+      #   labels:
+      #     zone: 'ТПИ км 673+408'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.153
+      #   labels:
+      #     zone: 'ТПИ км 673+408'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.154
+      #   labels:
+      #     zone: 'ТПИ км 673+408'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.155
+      #   labels:
+      #     zone: 'ТПИ км 673+408'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.156
+      #   labels:
+      #     zone: 'ТПИ км 673+408'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.157
+      #   labels:
+      #     zone: 'ТПИ км 673+408'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.158
+      #   labels:
+      #     zone: 'ТПИ км 673+408'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.159
+      #   labels:
+      #     zone: 'ТПИ км 673+408'
+      #     name: 'Широковещательный'
+
+      #ТПИ км 15+097
+      - targets:
+        - 10.14.242.161
+        labels:
+          zone: 'ТПИ км 15+097'
+          name: 'Шлюз'
+      - targets:
+        - 10.14.242.162
+        labels:
+          zone: 'ТПИ км 15+097'
+          name: 'МиниПК'
+      - targets:
+        - 10.14.242.163
+        labels:
+          zone: 'ТПИ км 15+097'
+          name: 'Контр. Laurent-5G'
+      - targets:
+        - 10.14.242.164
+        labels:
+          zone: 'ТПИ км 15+097'
+          name: 'Контроллер ТПИ'
+      - targets:
+        - 10.14.242.165
+        labels:
+          zone: 'ТПИ км 15+097'
+          name: 'Контроллер ЗПИ'
+      - targets:
+        - 10.14.242.166
+        labels:
+          zone: 'ТПИ км 15+097'
+          name: 'L2 Коммутатор LTV'
+      # - targets:
+      #   - 10.14.242.167
+      #   labels:
+      #     zone: 'ТПИ км 15+097'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.168
+      #   labels:
+      #     zone: 'ТПИ км 15+097'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.169
+      #   labels:
+      #     zone: 'ТПИ км 15+097'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.170
+      #   labels:
+      #     zone: 'ТПИ км 15+097'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.171
+      #   labels:
+      #     zone: 'ТПИ км 15+097'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.172
+      #   labels:
+      #     zone: 'ТПИ км 15+097'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.173
+      #   labels:
+      #     zone: 'ТПИ км 15+097'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.174
+      #   labels:
+      #     zone: 'ТПИ км 15+097'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.175
+      #   labels:
+      #     zone: 'ТПИ км 15+097'
+      #     name: 'Широковещательный'
+
+      #ТПИ км 12+909
+      - targets:
+        - 10.14.242.177
+        labels:
+          zone: 'ТПИ км 12+909'
+          name: 'Шлюз'
+      - targets:
+        - 10.14.242.178
+        labels:
+          zone: 'ТПИ км 12+909'
+          name: 'МиниПК'
+      - targets:
+        - 10.14.242.179
+        labels:
+          zone: 'ТПИ км 12+909'
+          name: 'Контр. Laurent-5G'
+      - targets:
+        - 10.14.242.180
+        labels:
+          zone: 'ТПИ км 12+909'
+          name: 'Контроллер ТПИ'
+      - targets:
+        - 10.14.242.181
+        labels:
+          zone: 'ТПИ км 12+909'
+          name: 'Контроллер ЗПИ'
+      - targets:
+        - 10.14.242.182
+        labels:
+          zone: 'ТПИ км 12+909'
+          name: 'L2 Коммутатор LTV'
+      # - targets:
+      #   - 10.14.242.183
+      #   labels:
+      #     zone: 'ТПИ км 12+909'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.184
+      #   labels:
+      #     zone: 'ТПИ км 12+909'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.185
+      #   labels:
+      #     zone: 'ТПИ км 12+909'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.186
+      #   labels:
+      #     zone: 'ТПИ км 12+909'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.187
+      #   labels:
+      #     zone: 'ТПИ км 12+909'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.188
+      #   labels:
+      #     zone: 'ТПИ км 12+909'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.189
+      #   labels:
+      #     zone: 'ТПИ км 12+909'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.190
+      #   labels:
+      #     zone: 'ТПИ км 12+909'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.191
+      #   labels:
+      #     zone: 'ТПИ км 12+909'
+      #     name: 'Широковещательный'
+
+      #ТПИ км 869+970
+      - targets:
+        - 10.14.242.193
+        labels:
+          zone: 'ТПИ км 869+970'
+          name: 'Шлюз'
+      - targets:
+        - 10.14.242.194
+        labels:
+          zone: 'ТПИ км 869+970'
+          name: 'МиниПК'
+      - targets:
+        - 10.14.242.195
+        labels:
+          zone: 'ТПИ км 869+970'
+          name: 'Контр. Laurent-5G'
+      - targets:
+        - 10.14.242.196
+        labels:
+          zone: 'ТПИ км 869+970'
+          name: 'Контроллер ТПИ'
+      - targets:
+        - 10.14.242.197
+        labels:
+          zone: 'ТПИ км 869+970'
+          name: 'Контроллер ЗПИ'
+      - targets:
+        - 10.14.242.198
+        labels:
+          zone: 'ТПИ км 869+970'
+          name: 'L2 Коммутатор LTV'
+      # - targets:
+      #   - 10.14.242.199
+      #   labels:
+      #     zone: 'ТПИ км 869+970'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.200
+      #   labels:
+      #     zone: 'ТПИ км 869+970'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.201
+      #   labels:
+      #     zone: 'ТПИ км 869+970'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.202
+      #   labels:
+      #     zone: 'ТПИ км 869+970'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.203
+      #   labels:
+      #     zone: 'ТПИ км 869+970'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.204
+      #   labels:
+      #     zone: 'ТПИ км 869+970'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.205
+      #   labels:
+      #     zone: 'ТПИ км 869+970'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.206
+      #   labels:
+      #     zone: 'ТПИ км 869+970'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.207
+      #   labels:
+      #     zone: 'ТПИ км 869+970'
+      #     name: 'Широковещательный'
+
+      #ТПИ км 936+485
+      - targets:
+        - 10.14.242.209
+        labels:
+          zone: 'ТПИ км 869+970'
+          name: 'Шлюз'
+      - targets:
+        - 10.14.242.210
+        labels:
+          zone: 'ТПИ км 869+970'
+          name: 'МиниПК'
+      - targets:
+        - 10.14.242.211
+        labels:
+          zone: 'ТПИ км 869+970'
+          name: 'Контр. Laurent-5G'
+      - targets:
+        - 10.14.242.212
+        labels:
+          zone: 'ТПИ км 869+970'
+          name: 'Контроллер ТПИ-1'
+      - targets:
+        - 10.14.242.213
+        labels:
+          zone: 'ТПИ км 869+970'
+          name: 'Контроллер ЗПИ-1'
+      - targets:
+        - 10.14.242.214
+        labels:
+          zone: 'ТПИ км 869+970'
+          name: 'Контроллер ТПИ-2'
+      - targets:
+        - 10.14.242.215
+        labels:
+          zone: 'ТПИ км 869+970'
+          name: 'Контроллер ЗПИ-2'
+      - targets:
+        - 10.14.242.216
+        labels:
+          zone: 'ТПИ км 869+970'
+          name: 'L2 Коммутатор LTV'
+      # - targets:
+      #   - 10.14.242.217
+      #   labels:
+      #     zone: 'ТПИ км 869+970'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.218
+      #   labels:
+      #     zone: 'ТПИ км 869+970'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.219
+      #   labels:
+      #     zone: 'ТПИ км 869+970'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.220
+      #   labels:
+      #     zone: 'ТПИ км 869+970'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.221
+      #   labels:
+      #     zone: 'ТПИ км 869+970'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.222
+      #   labels:
+      #     zone: 'ТПИ км 869+970'
+      #     name: ''
+      # - targets:
+      #   - 10.14.242.223
+      #   labels:
+      #     zone: 'ТПИ км 869+970'
+      #     name: 'Широковещательный'
+    relabel_configs:    # <== This comes from the blackbox exporter README
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox:9115 # Blackbox exporter.
+
+
